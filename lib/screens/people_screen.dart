@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_star_wars/models/people_list_response/people_list_response.dart';
 import 'package:flutter_star_wars/models/people_list_response/result.dart';
+import 'package:flutter_star_wars/screens/people_detail_screen.dart';
 import 'package:http/http.dart' as http;
 
 class PeopleScreen extends StatefulWidget {
@@ -22,8 +23,8 @@ class _PeopleScreenState extends State<PeopleScreen> {
 
   @override
   Widget build(BuildContext context) {
+  return Scaffold(
     
-return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(200),
         child: AppBar(
@@ -35,7 +36,7 @@ return Scaffold(
                 'https://i.blogs.es/1da08b/1366_2000-9-/1366_2000.jpeg',
                 fit: BoxFit.cover,
               ),
-              // Sombreado para mejorar legibilidad
+              // Filtro oscuro
               Container(
                 color: Colors.black.withOpacity(0.5),
               ),
@@ -77,7 +78,7 @@ return Scaffold(
           future: peopleResponse,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return _buildPeopleList(snapshot.data!);
+              return _buildPeopleList(context, snapshot.data!);
             } else if (snapshot.hasError) {
               return Center(
                 child: Text(
@@ -105,7 +106,7 @@ return Scaffold(
     }
   }
 
- Widget _buildPeopleList(PeopleResponse peopleResponse) {
+ Widget _buildPeopleList(BuildContext context, PeopleResponse peopleResponse) {
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: GridView.builder(
@@ -118,18 +119,28 @@ return Scaffold(
       itemCount: peopleResponse.results!.length,
       itemBuilder: (context, index) {
         final person = peopleResponse.results![index];
-        return _buildPersonCard(person);
+        return _buildPersonCard(context,person);
       },
     ),
   );
 }
-Widget _buildPersonCard(People person) {
+
+  
+Widget _buildPersonCard(BuildContext context, People person) {
     final id = person.url?.split('/').where((e) => e.isNotEmpty).last;
     final imageUrl = id != null
         ? 'https://starwars-visualguide.com/assets/img/characters/$id.jpg'
         : 'assets/images/placeholder.jpg';
-
-    return Padding(
+return GestureDetector(
+    onTap: () {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => PeopleDetailScreen(peopleItem: person),
+        ),
+      );
+    },
+  
+    child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Card(
         shape: RoundedRectangleBorder(
@@ -181,6 +192,20 @@ Widget _buildPersonCard(People person) {
           ],
         ),
       ),
+      ),
     );
+    
+  
+  }
+  Widget _buildPeopleItem(BuildContext context, People people) {
+    return GestureDetector(
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => PeopleDetailScreen(peopleItem: people),
+            ),
+          );
+        },
+        child: Text(people.name!));
   }
 }
