@@ -34,6 +34,7 @@ class _PeopleDetailScreenState extends State<PeopleDetailScreen> {
             ],
           ),
         ),
+    // Etiqueta coincidente
         child:  SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -41,6 +42,8 @@ class _PeopleDetailScreenState extends State<PeopleDetailScreen> {
           children: [
             // Imagen del personaje
     Center(
+    child:  Hero(
+    tag: 'person-image-${widget.peopleItem.name}', 
       child: Image.network(
         widget.peopleItem.url != null
             ? 'https://starwars-visualguide.com/assets/img/characters/${widget.peopleItem.url!.split('/').where((e) => e.isNotEmpty).last}.jpg'
@@ -54,6 +57,7 @@ class _PeopleDetailScreenState extends State<PeopleDetailScreen> {
           );
         },
       ),
+    ),
             ),
             const SizedBox(height: 16),
 
